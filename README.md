@@ -1,1 +1,2 @@
-# wscq
+# Westminster Shorter Catechism
+
