@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Image,
+  ImageBackground,
   StyleSheet,
   Text,
   View
@@ -18,7 +19,7 @@ export default class App extends Component<{}> {
 	    this.wcs = require('./wcs.cn.json');
       else
         this.wcs = require('./wcs.en.json');
-	  //this.setState({isLoadingWCS : false});
+	  this.setState({isLoadingWCS : false});
 	});
   }
  
@@ -37,17 +38,15 @@ export default class App extends Component<{}> {
       return this.splashScreenRender();
     } else {
       return (
-        <View style={styles.container}>
-          <Text style={styles.welcome}>
-             This is question
-          </Text>
-          <Text style={styles.instructions}>
-             This is answer
-          </Text>
-          <Text style={styles.instructions}>
-             This is scripture
-          </Text>
-        </View>
+        <ImageBackground
+           style={styles.bgimg} 
+           source={require('./res/img/wcs.png')}>
+          <View style={styles.fgcontainer}>
+            <Text style={styles.qa}>
+               WCS WCS WCS
+            </Text>
+          </View>
+        </ImageBackground>
       );
     }
   }
@@ -59,5 +58,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#00FF7F'
+  },
+  bgimg: {
+    flex: 1
+  },
+  fgcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  qa: {
+    fontSize: 30,
+    fontWeight: 'bold'
   }
 });
