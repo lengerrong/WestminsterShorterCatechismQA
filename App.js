@@ -1,57 +1,63 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
-  Platform,
+  Image,
   StyleSheet,
   Text,
   View
 } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import { getLanguages } from 'react-native-i18n'
 
 export default class App extends Component<{}> {
-  render() {
+ 
+  constructor(props) {
+    super(props);
+    this.state = { isLoadingWCS : true }
+    getLanguages().then(languages => {
+      if (languages.indexOf('CN') != -1)
+	    this.wcs = require('./wcs.cn.json');
+      else
+        this.wcs = require('./wcs.en.json');
+	  //this.setState({isLoadingWCS : false});
+	});
+  }
+ 
+  splashScreenRender() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
+	  <View style={styles.splashContainer}>
+		<Image 
+			source={require('./res/img/Catechism-words.png')}>
+        </Image>
+	  </View>
+    )
+  }
+
+  render() {
+    if ( this.state.isLoadingWCS ) {
+      return this.splashScreenRender();
+    } else {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>
+             This is question
+          </Text>
+          <Text style={styles.instructions}>
+             This is answer
+          </Text>
+          <Text style={styles.instructions}>
+             This is scripture
+          </Text>
+        </View>
+      );
+    }
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  splashContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    backgroundColor: '#00FF7F'
+  }
 });
