@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { getLanguages } from 'react-native-i18n'
 
+import I18n from './app/i18n/i18n'
+
 export default class App extends Component<{}> {
  
   constructor(props) {
@@ -15,10 +17,11 @@ export default class App extends Component<{}> {
     this.splashImg = require('./res/img/Catechism-words.png');
     this.state = { isLoadingWCS : true }
     getLanguages().then(languages => {
-      if (languages.indexOf('CN') != -1)
-	    this.wcs = require('./wcs.cn.json');
+      console.log(languages);
+      if (languages[0].indexOf('zh') != -1)
+	    this.wcs = require('./wcs.zh.json');
       else
-        this.wcs = require('./wcs.cn.json');
+        this.wcs = require('./wcs.en.json');
       this.splashTimer = 
         setTimeout(() => {
           this.setState({isLoadingWCS : false});
@@ -48,12 +51,12 @@ export default class App extends Component<{}> {
 		<View style={styles.container}>
           <View style={styles.header}>
 			<Text>
-			  Westminster Shorter Catechism
+              {I18n.t('wcsqa')}
             </Text>
           </View>
           <View style={styles.content}>
 			<Text>
-			  Westminster Shorter Catechism
+			  {this.wcs[0].Q}
             </Text>
           </View>
         </View>
