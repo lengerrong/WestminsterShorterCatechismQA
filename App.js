@@ -6,28 +6,35 @@ import {
   Text,
   View
 } from 'react-native';
-
 import { getLanguages } from 'react-native-i18n'
 
 export default class App extends Component<{}> {
  
   constructor(props) {
     super(props);
+    this.splashImg = require('./res/img/Catechism-words.png');
     this.state = { isLoadingWCS : true }
     getLanguages().then(languages => {
       if (languages.indexOf('CN') != -1)
 	    this.wcs = require('./wcs.cn.json');
       else
-        this.wcs = require('./wcs.en.json');
-	  this.setState({isLoadingWCS : false});
+        this.wcs = require('./wcs.cn.json');
+      this.splashTimer = 
+        setTimeout(() => {
+          this.setState({isLoadingWCS : false});
+        }, 2000);
 	});
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.splashTimer);
   }
  
   splashScreenRender() {
     return (
 	  <View style={styles.splashContainer}>
 		<Image 
-			source={require('./res/img/Catechism-words.png')}>
+			source={this.splashImg}>
         </Image>
 	  </View>
     )
@@ -37,17 +44,20 @@ export default class App extends Component<{}> {
     if ( this.state.isLoadingWCS ) {
       return this.splashScreenRender();
     } else {
-      return (
-        <ImageBackground
-           style={styles.bgimg} 
-           source={require('./res/img/wcs.png')}>
-          <View style={styles.fgcontainer}>
-            <Text style={styles.qa}>
-               WCS WCS WCS
+	  return (
+		<View style={styles.container}>
+          <View style={styles.header}>
+			<Text>
+			  Westminster Shorter Catechism
             </Text>
           </View>
-        </ImageBackground>
-      );
+          <View style={styles.content}>
+			<Text>
+			  Westminster Shorter Catechism
+            </Text>
+          </View>
+        </View>
+	  )
     }
   }
 }
@@ -57,18 +67,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#00FF7F'
   },
-  bgimg: {
+  container: {
     flex: 1
   },
-  fgcontainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+  header: {
+    backgroundColor: '#00FF7F',
+    flex: 1
   },
-  qa: {
-    fontSize: 30,
-    fontWeight: 'bold'
+  content: {
+    backgroundColor: '#F5DEB3',
+    flex: 13
   }
 });
