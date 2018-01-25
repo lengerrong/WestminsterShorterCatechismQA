@@ -4,6 +4,7 @@ import {
   ImageBackground,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 import { getLanguages } from 'react-native-i18n'
@@ -50,9 +51,15 @@ export default class App extends Component<{}> {
 	  return (
 		<View style={styles.container}>
           <View style={styles.header}>
-			<Text>
+			<Text style={styles.title}>
               {I18n.t('wcsqa')}
             </Text>
+            <TouchableOpacity onPress={() => {}}>
+              <Image
+                style={styles.option}
+                source={require('./res/img/nav_icon.png')}
+              />
+            </TouchableOpacity>
           </View>
           <View style={styles.content}>
 			<Text>
@@ -72,14 +79,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    flex: 1
+    flex: 2,
   },
   header: {
     backgroundColor: '#00FF7F',
-    flex: 1
+    flex: 1,
+	flexDirection: 'row',
+    alignItems: 'center',
+  	justifyContent: 'space-around',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  option: {
+    width:32,
+    height:32
   },
   content: {
     backgroundColor: '#F5DEB3',
-    flex: 13
+    flex: 12
   }
 });
