@@ -11,12 +11,17 @@ import { getLanguages } from 'react-native-i18n'
 
 import I18n from './app/i18n/i18n'
 
+const NORMAL_MODE = 0;
+const MEMORY_MODE = 1;
+const PLAY_MODE = 2;
+
 export default class App extends Component<{}> {
- 
+  
+
   constructor(props) {
     super(props);
     this.splashImg = require('./res/img/Catechism-words.png');
-    this.state = { isLoadingWCS : true }
+    this.state = { isLoadingWCS : true, contentMode : NORMAL_MODE, index : 0 }
     getLanguages().then(languages => {
       console.log(languages);
       if (languages[0].indexOf('zh') != -1)
@@ -44,6 +49,30 @@ export default class App extends Component<{}> {
     )
   }
 
+  contentRender() {
+    return (
+      <View style={styles.contentContainer}>
+        <View style={styles.q}>
+          <Text style={styles.tq}>
+            {this.wcs[this.state.index].Q}
+          </Text>
+        </View>
+        <View style={styles.a}>
+          <Text style={styles.ta}>
+            {this.wcs[this.state.index].A}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  showOption() {
+    let newIndex = this.state.index + 1;
+    if (newIndex >= this.wcs.length)
+      newIndex = 0;
+    this.setState({index:newIndex});
+  }
+
   render() {
     if ( this.state.isLoadingWCS ) {
       return this.splashScreenRender();
@@ -54,7 +83,7 @@ export default class App extends Component<{}> {
 			<Text style={styles.title}>
               {I18n.t('wcsqa')}
             </Text>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {this.showOption()}}>
               <Image
                 style={styles.option}
                 source={require('./res/img/nav_icon.png')}
@@ -62,9 +91,7 @@ export default class App extends Component<{}> {
             </TouchableOpacity>
           </View>
           <View style={styles.content}>
-			<Text>
-			  {this.wcs[0].Q}
-            </Text>
+            {this.contentRender()}
           </View>
         </View>
 	  )
@@ -99,5 +126,33 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: '#F5DEB3',
     flex: 12
+  },
+  contentContainer: {
+    flex: 1,
+  	justifyContent: 'flex-start'
+  },
+  q: {
+    alignItems: 'center',
+  	justifyContent: 'center',
+    backgroundColor: '#EE82EE',
+    margin: 10,
+    borderRadius: 10
+  },
+  a: {
+  	justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#48D1CC',
+    margin: 10,
+    borderRadius: 10
+  },
+  tq: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    margin: 10
+  },
+  ta: {
+    margin: 10,
+    fontSize: 20,
+    fontWeight: 'bold'
   }
 });
