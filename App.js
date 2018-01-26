@@ -49,6 +49,10 @@ export default class App extends Component<{}> {
     )
   }
 
+  getS(index) {
+    return this.wcs[index].S.toString();
+  }
+
   contentRender() {
     return (
       <View style={styles.contentContainer}>
@@ -60,6 +64,11 @@ export default class App extends Component<{}> {
         <View style={styles.a}>
           <Text style={styles.ta}>
             {this.wcs[this.state.index].A}
+          </Text>
+        </View>
+        <View style={styles.s}>
+          <Text style={styles.ts}>
+            {this.getS(this.state.index)}
           </Text>
         </View>
       </View>
@@ -145,12 +154,24 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10
   },
+  s: {
+  	justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F0FFFF',
+    margin: 10,
+    borderRadius: 10
+  },
   tq: {
     fontSize: 20,
     fontWeight: 'bold',
     margin: 10
   },
   ta: {
+    margin: 10,
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  ts: {
     margin: 10,
     fontSize: 20,
     fontWeight: 'bold'
