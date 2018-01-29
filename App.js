@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { getLanguages } from 'react-native-i18n'
 
+import ReactNativeLanguages from 'react-native-languages';
 import I18n from './app/i18n/i18n'
 
 const NORMAL_MODE = 0;
@@ -22,17 +22,27 @@ export default class App extends Component<{}> {
     super(props);
     this.splashImg = require('./res/img/Catechism-words.png');
     this.state = { isLoadingWCS : true, contentMode : NORMAL_MODE, index : 0 }
-    getLanguages().then(languages => {
-      console.log(languages);
-      if (languages[0].indexOf('zh') != -1)
-	    this.wcs = require('./wcs.zh.json');
-      else
-        this.wcs = require('./wcs.en.json');
-      this.splashTimer = 
-        setTimeout(() => {
-          this.setState({isLoadingWCS : false});
-        }, 2000);
-	});
+
+    ReactNativeLanguages.addEventListener('change', ({ language }) => {
+      I18n.locale = language;
+      this.loadWCS(language);
+    });
+
+    this.loadWCS(ReactNativeLanguages.language);
+
+    this.splashTimer = 
+      setTimeout(() => {
+        this.setState({isLoadingWCS : false});
+      }, 2000);
+  }
+
+  loadWCS(language) {
+    console.log("locale is " + language);
+    if (language.indexOf('zh') != -1)
+      this.wcs = require('./wcs.zh.json');
+    else
+      this.wcs = require('./wcs.en.json');
+    this.setState({isLoadingWCS : false});
   }
 
   componentWillUnmount() {

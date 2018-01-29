@@ -3,6 +3,7 @@ package com.westminstershortercatechismqa;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactcommunity.reactnativelanguages.ReactNativeLanguagesPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeLanguagesPackage(),
             new RNI18nPackage()
       );
     }
