@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   StyleSheet,
+  ScrollView,
   Text,
   TouchableOpacity,
   View
@@ -15,8 +16,16 @@ const NORMAL_MODE = 0;
 const MEMORY_MODE = 1;
 const PLAY_MODE = 2;
 
+function modeID(mode) {
+  if (mode == NORMAL_MODE)
+    return "normalmode";
+  else if (mode == MEMORY_MODE)
+    return "memorymode";
+  else
+    return "playmode";
+}
+
 export default class App extends Component<{}> {
-  
 
   constructor(props) {
     super(props);
@@ -29,20 +38,18 @@ export default class App extends Component<{}> {
     });
 
     this.loadWCS(ReactNativeLanguages.language);
+  }
 
+  loadWCS(language) {
     this.splashTimer = 
       setTimeout(() => {
         this.setState({isLoadingWCS : false});
       }, 2000);
-  }
-
-  loadWCS(language) {
-    console.log("locale is " + language);
+    this.setState({isLoadingWCS : true});
     if (language.indexOf('zh') != -1)
       this.wcs = require('./wcs.zh.json');
     else
       this.wcs = require('./wcs.en.json');
-    this.setState({isLoadingWCS : false});
   }
 
   componentWillUnmount() {
@@ -59,11 +66,7 @@ export default class App extends Component<{}> {
     )
   }
 
-  getS(index) {
-    return this.wcs[index].S.toString();
-  }
-
-  contentRender() {
+  normalRender() {
     return (
       <View style={styles.contentContainer}>
         <View style={styles.q}>
@@ -76,20 +79,95 @@ export default class App extends Component<{}> {
             {this.wcs[this.state.index].A}
           </Text>
         </View>
-        <View style={styles.s}>
+        <ScrollView contentContainerStyle={styles.s}>
           <Text style={styles.ts}>
             {this.getS(this.state.index)}
           </Text>
+        </ScrollView>
+        <View style={styles.ad}>
         </View>
       </View>
     )
   }
 
+  memoryRender() {
+    return (
+      <Text>
+        memory render
+      </Text>
+    )
+  }
+
+  playRender() {
+    return (
+      <Text>
+        play render
+      </Text>
+    )
+  }
+
+  getS(index) {
+    return this.wcs[index].S.toString();
+  }
+
+  contentRender() {
+    if (this.state.contentMode == NORMAL_MODE)
+      return this.normalRender();
+    else if (this.state.contentMode == MEMORY_MODE)
+      return this.memoryRender();
+    else
+      return this.playRender();
+  }
+  
+  optionRender() {
+    if (this.state.isShowOption) {
+      let modelist = [];
+      if (this.state.contentMode == NORMAL_MODE) {
+        modelist.push(MEMORY_MODE);
+        modelist.push(PLAY_MODE);
+      } else if (this.state.contentMode == MEMORY_MODE) {
+        modelist.push(NORMAL_MODE);
+        modelist.push(PLAY_MODE);
+      } else {
+        modelist.push(NORMAL_MODE);
+        modelist.push(MEMORY_MODE);
+      }
+      return (
+        <View style={styles.optionContainer}>
+          <TouchableOpacity onPress={() => {this.setMode(modelist[0])}}>
+            <Text style={styles.optionText}>
+              {I18n.t(modeID(modelist[0]))}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {this.setMode(modelist[1])}}>
+            <Text style={styles.optionText}>
+              {I18n.t(modeID(modelist[1]))}
+            </Text>
+          </TouchableOpacity>
+          {this.state.contentMode == NORMAL_MODE && (
+          <TouchableOpacity onPress={() => {this.listAllQA()}}>
+            <Text style={styles.optionText}>
+              {I18n.t('qaindex')}
+            </Text>
+          </TouchableOpacity>)}
+        </View>
+      )
+    } else {
+      return null;
+    }
+  }
+
+  listAllQA() {
+    this.setState({isShowOption:false});
+  }
+
+  setMode(mode) {
+    this.setState({isShowOption:false});
+    this.setState({contentMode:mode});
+  }
+
   showOption() {
-    let newIndex = this.state.index + 1;
-    if (newIndex >= this.wcs.length)
-      newIndex = 0;
-    this.setState({index:newIndex});
+    this.setState({isShowOption:!this.state.isShowOption});
   }
 
   render() {
@@ -109,6 +187,7 @@ export default class App extends Component<{}> {
               />
             </TouchableOpacity>
           </View>
+          {this.optionRender()}
           <View style={styles.content}>
             {this.contentRender()}
           </View>
@@ -125,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    flex: 2,
+    flex: 1,
   },
   header: {
     backgroundColor: '#00FF7F',
@@ -168,8 +247,16 @@ const styles = StyleSheet.create({
   	justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F0FFFF',
+    margin: 10
+  },
+  ad: {
+  	justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
     margin: 10,
-    borderRadius: 10
+    borderRadius: 10,
+    height: 100,
+    alignSelf: 'flex-end'
   },
   tq: {
     fontSize: 20,
@@ -182,6 +269,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   ts: {
+    margin: 10,
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  optionContainer: {
+    backgroundColor: '#808000'
+  },
+  optionText: {
     margin: 10,
     fontSize: 20,
     fontWeight: 'bold'
