@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Image,
   ImageBackground,
+  Modal,
   StyleSheet,
   ScrollView,
   Text,
@@ -30,7 +31,7 @@ export default class App extends Component<{}> {
   constructor(props) {
     super(props);
     this.splashImg = require('./res/img/Catechism-words.png');
-    this.state = { isLoadingWCS : true, contentMode : NORMAL_MODE, index : 0 }
+    this.state = { isLoadingWCS : true, contentMode : NORMAL_MODE, index : 0, modalVisible : false }
 
     ReactNativeLanguages.addEventListener('change', ({ language }) => {
       I18n.locale = language;
@@ -41,7 +42,7 @@ export default class App extends Component<{}> {
   }
 
   loadWCS(language) {
-    this.splashTimer = 
+    this.splashTimer =
       setTimeout(() => {
         this.setState({isLoadingWCS : false});
       }, 2000);
@@ -55,15 +56,52 @@ export default class App extends Component<{}> {
   componentWillUnmount() {
     clearTimeout(this.splashTimer);
   }
- 
+
   splashScreenRender() {
     return (
 	  <View style={styles.splashContainer}>
-		<Image 
+		<Image
 			source={this.splashImg}>
         </Image>
 	  </View>
     )
+  }
+
+  closeModal() {
+    this.setState({modalVisible:false});
+  }
+  
+  genList(index, l) {
+    let cl = [];
+    for (var i = 0; i < 5; i++) {
+      if (index > l)
+        break;
+      cl.push(<TouchableOpacity onPress={() => {this.setIndex(index)}}>
+         <Text style={styles.listText}>
+           {index}
+         </Text>
+       </TouchableOpacity>);
+      index += 1;
+    }
+    return cl;
+  }
+
+  genAllQAList() {
+    let l = this.wcs.length;
+    let index = 1;
+    let list = [];
+    while (1) {
+      if (index > l)
+        break;
+      let cl = this.genList(index, l);
+      if (cl.length > 0) {
+        list.push(<View style={styles.listColumn}>
+          {cl}
+        </View>);
+        index += cl.length;
+      }
+    }
+    return list;
   }
 
   normalRender() {
@@ -86,6 +124,15 @@ export default class App extends Component<{}> {
         </ScrollView>
         <View style={styles.ad}>
         </View>
+        <Modal
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => this.closeModal()}
+          >
+          <ScrollView contentContainerStyle={styles.list}>
+            {this.genAllQAList()}
+          </ScrollView>
+        </Modal>
       </View>
     )
   }
@@ -118,7 +165,7 @@ export default class App extends Component<{}> {
     else
       return this.playRender();
   }
-  
+
   optionRender() {
     if (this.state.isShowOption) {
       let modelist = [];
@@ -158,7 +205,7 @@ export default class App extends Component<{}> {
   }
 
   listAllQA() {
-    this.setState({isShowOption:false});
+    this.setState({isShowOption:false, modalVisible: true});
   }
 
   setMode(mode) {
@@ -277,6 +324,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#808000'
   },
   optionText: {
+    margin: 10,
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  list: {
+    top: 100,
+  	justifyContent: 'center',
+    alignItems: 'center',
+    height: 600,
+    alignSelf: 'center',
+    backgroundColor: '#A9A9A9'
+  },
+  listColumn: {
+	flexDirection: 'row',
+  	justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  listText: {
     margin: 10,
     fontSize: 20,
     fontWeight: 'bold'
