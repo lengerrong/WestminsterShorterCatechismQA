@@ -4,6 +4,7 @@ import {
   Image,
   ImageBackground,
   Modal,
+  PanResponder,
   StyleSheet,
   ScrollView,
   Text,
@@ -42,6 +43,71 @@ export default class App extends Component<{}> {
     this.loadWCS(ReactNativeLanguages.language);
   }
 
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      // Ask to be the responder:
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        if (this.state.modalVisible)
+          return false;
+        return true
+      },
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => {
+        if (this.state.modalVisible)
+          return false;
+        return true
+      },
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        if (this.state.modalVisible)
+          return false;
+        return true
+      },
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+        if (this.state.modalVisible)
+          return false;
+        return true
+      },
+      onPanResponderGrant: (evt, gestureState) => {
+        // The gesture has started. Show visual feedback so the user knows
+        // what is happening!
+
+        // gestureState.d{x,y} will be set to zero now
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // The most recent move distance is gestureState.move{X,Y}
+
+        // The accumulated gesture distance since becoming responder is
+        // gestureState.d{x,y}
+      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderRelease: (evt, gestureState) => {
+        // The user has released all touches while this view is the
+        // responder. This typically means a gesture has succeeded
+        if ((gestureState.dx > 5 || gestureState.dx < -5) && this.state.contentMode == NORMAL_MODE) {
+          let ni = this.state.index;
+          if (gestureState.dx < 0) {
+            ni++;
+          } else {
+            ni--;
+          }
+          if (ni < 0)
+            ni = this.wcs.length - 1;
+          if (ni >= this.wcs.length)
+            ni = 0;
+          this.setState({index:ni});
+        }
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+        // Another component has become the responder, so this gesture
+        // should be cancelled
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        // Returns whether this component should block native components from becoming the JS
+        // responder. Returns true by default. Is currently only supported on android.
+        return true;
+      },
+    });
+  }
+
   loadWCS(language) {
     this.splashTimer =
       setTimeout(() => {
@@ -71,7 +137,7 @@ export default class App extends Component<{}> {
   closeModal() {
     this.setState({modalVisible:false});
   }
-  
+
   setIndex(index) {
     console.log("index " + index);
     index -= 1;
@@ -115,18 +181,33 @@ export default class App extends Component<{}> {
   }
 
   normalRender() {
+    let qs = I18n.t('question');
+    qs = qs.replace('index', String(this.state.index+1));
     return (
-      <View style={styles.contentContainer}>
-        <View style={styles.q}>
-          <Text style={styles.tq}>
-            {this.wcs[this.state.index].Q}
+      <View style={styles.contentContainer} {...this._panResponder.panHandlers}>
+        <View style={styles.qc}>
+          <Text style={styles.hq}>
+            {qs}
           </Text>
+          <View style={styles.q}>
+            <Text style={styles.tq}>
+              {this.wcs[this.state.index].Q}
+            </Text>
+          </View>
         </View>
-        <View style={styles.a}>
-          <Text style={styles.ta}>
-            {this.wcs[this.state.index].A}
+        <View style={styles.ac}>
+          <Text style={styles.ha}>
+            {I18n.t('answer')}
           </Text>
+          <View style={styles.a}>
+            <Text style={styles.ta}>
+              {this.wcs[this.state.index].A}
+            </Text>
+          </View>
         </View>
+        <Text style={styles.hs}>
+          {I18n.t('scripture')}
+        </Text>
         <ScrollView contentContainerStyle={styles.s}>
           <Text style={styles.ts}>
             {this.getS(this.state.index)}
@@ -290,25 +371,61 @@ const styles = StyleSheet.create({
     flex: 1,
   	justifyContent: 'flex-start'
   },
+  qc: {
+    backgroundColor: '#87CEFA',
+  },
+  hq: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    margin: 5
+  },
   q: {
     alignItems: 'center',
   	justifyContent: 'center',
     backgroundColor: '#EE82EE',
-    margin: 10,
-    borderRadius: 10
+    borderRadius: 10,
+    margin: 5
+  },
+  tq: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    margin: 10
+  },
+  ac: {
+    backgroundColor: '#DB7093',
+  },
+  ha: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    margin: 5
   },
   a: {
   	justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#48D1CC',
+    borderRadius: 5,
+    margin: 5
+  },
+  ta: {
     margin: 10,
-    borderRadius: 10
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   s: {
   	justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F0FFFF',
-    margin: 10
+    margin: 5
+  },
+  ts: {
+    margin: 10,
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  hs: {
+    margin: 5,
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   ad: {
   	justifyContent: 'center',
@@ -318,21 +435,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 100,
     alignSelf: 'flex-end'
-  },
-  tq: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 10
-  },
-  ta: {
-    margin: 10,
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
-  ts: {
-    margin: 10,
-    fontSize: 20,
-    fontWeight: 'bold'
   },
   optionContainer: {
     backgroundColor: '#808000'

@@ -3,5 +3,8 @@ export default {
   normalmode: 'Browser Q&A',
   memorymode: 'Memory Q&A',
   playmode: 'Play Q&A',
-  qaindex: 'Q&A Index'
+  qaindex: 'Q&A Index',
+  question: 'Question. index.',
+  answer: 'Answer.',
+  scripture: 'Scripture.'
 };
