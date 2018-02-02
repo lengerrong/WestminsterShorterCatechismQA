@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Dimensions,
   Image,
   ImageBackground,
   Modal,
@@ -71,12 +72,21 @@ export default class App extends Component<{}> {
     this.setState({modalVisible:false});
   }
   
+  setIndex(index) {
+    console.log("index " + index);
+    index -= 1;
+    if (this.state.index != index)
+      this.state.index = index;
+    this.setState({modalVisible:false});
+  }
+
   genList(index, l) {
     let cl = [];
     for (var i = 0; i < 5; i++) {
       if (index > l)
         break;
-      cl.push(<TouchableOpacity onPress={() => {this.setIndex(index)}}>
+      let ni = index;
+      cl.push(<TouchableOpacity style={styles.listTextContainer} onPress={() => {this.setIndex(ni)}}>
          <Text style={styles.listText}>
            {index}
          </Text>
@@ -244,6 +254,10 @@ export default class App extends Component<{}> {
   }
 }
 
+var {wh, ww} = Dimensions.get('window');
+
+console.log("(" + ww + ", " + wh + ")");
+
 const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
@@ -329,20 +343,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   list: {
-    top: 100,
   	justifyContent: 'center',
     alignItems: 'center',
-    height: 600,
-    alignSelf: 'center',
-    backgroundColor: '#A9A9A9'
+    alignSelf: 'center'
   },
   listColumn: {
 	flexDirection: 'row',
-  	justifyContent: 'space-around',
+  	justifyContent: 'space-between',
     alignItems: 'center'
   },
+  listTextContainer: {
+    borderColor: '#808080',
+  	justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    width: 64,
+    height: 64,
+    backgroundColor: '#FFFAF0'
+  },
   listText: {
-    margin: 10,
     fontSize: 20,
     fontWeight: 'bold'
   }
