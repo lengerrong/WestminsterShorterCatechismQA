@@ -180,33 +180,71 @@ export default class App extends Component<{}> {
     return list;
   }
 
+  renderAnswer(answer) {
+    let ans = [];
+    let text = answer;
+    let pi = text.indexOf("[");
+    while (pi != -1) {
+      let pt = text.substring(0, pi);
+      text = text.substring(pi+1);
+      pi = text.indexOf("]");
+      let ht = text.substring(0, pi);
+      text = text.substring(pi+1);
+      if (pt.length > 0) {
+        ans.push(
+            <Text style={styles.nfont}>
+              {pt}
+            </Text>
+        );
+      }
+      if (ht.length > 0) {
+        ans.push(
+            <Text style={styles.subfont}>
+              {ht}
+            </Text>
+        );
+      }
+      pi = text.indexOf("[");
+    }
+    if (text.length > 0) {
+      ans.push(
+          <Text style={styles.nfont}>
+            {text}
+          </Text>
+      );
+    }
+    return ans;
+  }
+
   normalRender() {
     let qs = I18n.t('question');
     qs = qs.replace('index', String(this.state.index+1));
     return (
       <View style={styles.contentContainer} {...this._panResponder.panHandlers}>
-        <View style={styles.qac}>
-          <View style={styles.qal}>
-            <Text style={styles.bfont}>
-              {qs}
-            </Text>
+        <View style={styles.qas}>
+          <View style={styles.qac}>
+            <View style={styles.qal}>
+              <Text style={styles.bfont}>
+                {qs}
+              </Text>
+            </View>
+            <View style={styles.qar}>
+              <Text style={styles.bfont}>
+                {this.wcs[this.state.index].Q}
+              </Text>
+            </View>
           </View>
-          <View style={styles.qar}>
-            <Text style={styles.bfont}>
-              {this.wcs[this.state.index].Q}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.qac}>
-          <View style={styles.qal}>
-            <Text style={styles.bfont}>
-              {I18n.t('answer')}
-            </Text>
-          </View>
-          <View style={styles.qar}>
-            <Text style={styles.nfont}>
-              {this.wcs[this.state.index].A}
-            </Text>
+          <View style={styles.qac}>
+            <View style={styles.qal}>
+              <Text style={styles.bfont}>
+                {I18n.t('answer')}
+              </Text>
+            </View>
+            <View style={styles.qar}>
+              <Text>
+                {this.renderAnswer(this.wcs[this.state.index].A)}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.ad}>
@@ -367,6 +405,9 @@ const styles = StyleSheet.create({
     flex: 1,
   	justifyContent: 'flex-start'
   },
+  qas: {
+    flex: 1,
+  },
   qac: {
     backgroundColor: '#87CEFA',
     flexDirection: 'row'
@@ -387,6 +428,9 @@ const styles = StyleSheet.create({
   bfont: {
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  subfont: {
+    fontSize: 13,
   },
   qc: {
     backgroundColor: '#87CEFA',
