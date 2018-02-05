@@ -185,34 +185,30 @@ export default class App extends Component<{}> {
     qs = qs.replace('index', String(this.state.index+1));
     return (
       <View style={styles.contentContainer} {...this._panResponder.panHandlers}>
-        <View style={styles.qc}>
-          <Text style={styles.hq}>
-            {qs}
-          </Text>
-          <View style={styles.q}>
-            <Text style={styles.tq}>
+        <View style={styles.qac}>
+          <View style={styles.qal}>
+            <Text style={styles.bfont}>
+              {qs}
+            </Text>
+          </View>
+          <View style={styles.qar}>
+            <Text style={styles.bfont}>
               {this.wcs[this.state.index].Q}
             </Text>
           </View>
         </View>
-        <View style={styles.ac}>
-          <Text style={styles.ha}>
-            {I18n.t('answer')}
-          </Text>
-          <View style={styles.a}>
-            <Text style={styles.ta}>
+        <View style={styles.qac}>
+          <View style={styles.qal}>
+            <Text style={styles.bfont}>
+              {I18n.t('answer')}
+            </Text>
+          </View>
+          <View style={styles.qar}>
+            <Text style={styles.nfont}>
               {this.wcs[this.state.index].A}
             </Text>
           </View>
         </View>
-        <Text style={styles.hs}>
-          {I18n.t('scripture')}
-        </Text>
-        <ScrollView contentContainerStyle={styles.s}>
-          <Text style={styles.ts}>
-            {this.getS(this.state.index)}
-          </Text>
-        </ScrollView>
         <View style={styles.ad}>
         </View>
         <Modal
@@ -350,8 +346,8 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#00FF7F',
-    flex: 1,
-	flexDirection: 'row',
+    height:50,
+	  flexDirection: 'row',
     alignItems: 'center',
   	justifyContent: 'space-around',
   },
@@ -365,11 +361,32 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: '#F5DEB3',
-    flex: 12
+    flex: 1
   },
   contentContainer: {
     flex: 1,
   	justifyContent: 'flex-start'
+  },
+  qac: {
+    backgroundColor: '#87CEFA',
+    flexDirection: 'row'
+  },
+  qal: {
+    flex: 2,
+    alignItems: 'flex-end',
+    margin: 5
+  },
+  qar: {
+    flex: 5,
+    alignItems: 'flex-start',
+    margin: 5
+  },
+  nfont : {
+    fontSize: 20
+  },
+  bfont: {
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   qc: {
     backgroundColor: '#87CEFA',
