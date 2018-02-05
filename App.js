@@ -216,6 +216,43 @@ export default class App extends Component<{}> {
     return ans;
   }
 
+  genScripture(S) {
+    let s = [];
+    let f = 1;
+    for (i in S) {
+      let st = S[i].T;
+      if (!f) {
+        st = "; " + st;
+      } else {
+        f = false;
+      }
+      s.push(<Text style={styles.sfont}>{st}</Text>);
+    }
+    return s;
+  }
+
+  renderScripture(S) {
+    let s = [];
+    for (i in S) {
+      if (S[i].length) {
+        let listS = this.genScripture(S[i]);
+        s.push(<Text>{listS}</Text>);
+      }
+    }
+    return s;
+  }
+
+  renderScriptureDetail(S) {
+    let s = [];
+    for (i in S) {
+      for (j in S[i]) {
+        let st = S[i][j].T + "    " + S[i][j].C;
+        s.push(<Text style={styles.ssfont}>{st}</Text>)
+      }
+    }
+    return s;
+  }
+
   normalRender() {
     let qs = I18n.t('question');
     qs = qs.replace('index', String(this.state.index+1));
@@ -246,8 +283,18 @@ export default class App extends Component<{}> {
               </Text>
             </View>
           </View>
-        </View>
-        <View style={styles.ad}>
+          <View style={styles.qac}>
+            <View style={styles.qal}>
+              <Text style={styles.bfont}>
+              </Text>
+            </View>
+            <View style={styles.qar}>
+                {this.renderScripture(this.wcs[this.state.index].S)}
+            </View>
+          </View>
+          <ScrollView contentContainerStyle={styles.s}>
+            {this.renderScriptureDetail(this.wcs[this.state.index].S)}
+          </ScrollView>
         </View>
         <Modal
           transparent={true}
@@ -398,7 +445,7 @@ const styles = StyleSheet.create({
     height:32
   },
   content: {
-    backgroundColor: '#F5DEB3',
+    backgroundColor: '#F0FFFF',
     flex: 1
   },
   contentContainer: {
@@ -430,7 +477,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   subfont: {
-    fontSize: 13,
+    fontSize: 13
+  },
+  sfont: {
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  ssfont: {
+    fontSize: 18,
+    margin: 5
   },
   qc: {
     backgroundColor: '#87CEFA',
@@ -474,9 +529,9 @@ const styles = StyleSheet.create({
   },
   s: {
   	justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: '#F0FFFF',
-    margin: 5
+    padding: 10
   },
   ts: {
     margin: 10,
