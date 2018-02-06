@@ -462,12 +462,12 @@ const styles = StyleSheet.create({
   qal: {
     flex: 2,
     alignItems: 'flex-end',
-    margin: 5
+    padding:1
   },
   qar: {
     flex: 5,
     alignItems: 'flex-start',
-    margin: 5
+    padding:1
   },
   nfont : {
     fontSize: 20
