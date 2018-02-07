@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Dimensions,
   Image,
-  ImageBackground,
   Modal,
   PanResponder,
   StyleSheet,
@@ -15,25 +13,12 @@ import {
 import ReactNativeLanguages from 'react-native-languages';
 import I18n from './app/i18n/i18n'
 
-const NORMAL_MODE = 0;
-const MEMORY_MODE = 1;
-const PLAY_MODE = 2;
-
-function modeID(mode) {
-  if (mode == NORMAL_MODE)
-    return "normalmode";
-  else if (mode == MEMORY_MODE)
-    return "memorymode";
-  else
-    return "playmode";
-}
-
 export default class App extends Component<{}> {
 
   constructor(props) {
     super(props);
     this.splashImg = require('./res/img/Catechism-words.png');
-    this.state = { isLoadingWCS : true, contentMode : NORMAL_MODE, index : 0, modalVisible : false }
+    this.state = { isLoadingWCS : true, index : 0, modalVisible : false }
 
     ReactNativeLanguages.addEventListener('change', ({ language }) => {
       I18n.locale = language;
@@ -82,7 +67,7 @@ export default class App extends Component<{}> {
       onPanResponderRelease: (evt, gestureState) => {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
-        if ((gestureState.dx > 5 || gestureState.dx < -5) && this.state.contentMode == NORMAL_MODE) {
+        if (gestureState.dx > 5 || gestureState.dx < -5) {
           let ni = this.state.index;
           if (gestureState.dx < 0) {
             ni++;
@@ -112,7 +97,7 @@ export default class App extends Component<{}> {
     this.splashTimer =
       setTimeout(() => {
         this.setState({isLoadingWCS : false});
-      }, 2000);
+      }, 1000);
     this.setState({isLoadingWCS : true});
     if (language.indexOf('zh') != -1)
       this.wcs = require('./wcs.zh.json');
@@ -311,116 +296,35 @@ export default class App extends Component<{}> {
     )
   }
 
-  memoryRender() {
-    return (
-      <Text>
-        memory render
-      </Text>
-    )
-  }
-
-  playRender() {
-    return (
-      <Text>
-        play render
-      </Text>
-    )
-  }
-
-  getS(index) {
-    return this.wcs[index].S.toString();
-  }
-
-  contentRender() {
-    if (this.state.contentMode == NORMAL_MODE)
-      return this.normalRender();
-    else if (this.state.contentMode == MEMORY_MODE)
-      return this.memoryRender();
-    else
-      return this.playRender();
-  }
-
-  optionRender() {
-    if (this.state.isShowOption) {
-      let modelist = [];
-      if (this.state.contentMode == NORMAL_MODE) {
-        modelist.push(MEMORY_MODE);
-        modelist.push(PLAY_MODE);
-      } else if (this.state.contentMode == MEMORY_MODE) {
-        modelist.push(NORMAL_MODE);
-        modelist.push(PLAY_MODE);
-      } else {
-        modelist.push(NORMAL_MODE);
-        modelist.push(MEMORY_MODE);
-      }
-      return (
-        <View style={styles.optionContainer}>
-          <TouchableOpacity onPress={() => {this.setMode(modelist[0])}}>
-            <Text style={styles.optionText}>
-              {I18n.t(modeID(modelist[0]))}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {this.setMode(modelist[1])}}>
-            <Text style={styles.optionText}>
-              {I18n.t(modeID(modelist[1]))}
-            </Text>
-          </TouchableOpacity>
-          {this.state.contentMode == NORMAL_MODE && (
-          <TouchableOpacity onPress={() => {this.listAllQA()}}>
-            <Text style={styles.optionText}>
-              {I18n.t('qaindex')}
-            </Text>
-          </TouchableOpacity>)}
-        </View>
-      )
-    } else {
-      return null;
-    }
-  }
-
   listAllQA() {
-    this.setState({isShowOption:false, modalVisible: true});
-  }
-
-  setMode(mode) {
-    this.setState({isShowOption:false});
-    this.setState({contentMode:mode});
-  }
-
-  showOption() {
-    this.setState({isShowOption:!this.state.isShowOption});
+    this.setState({modalVisible: true});
   }
 
   render() {
     if ( this.state.isLoadingWCS ) {
       return this.splashScreenRender();
     } else {
-	  return (
-		<View style={styles.container}>
+  	  return (
+  		  <View style={styles.container}>
           <View style={styles.header}>
-			<Text style={styles.title}>
+			      <Text style={styles.title}>
               {I18n.t('wcsqa')}
             </Text>
-            <TouchableOpacity onPress={() => {this.showOption()}}>
+            <TouchableOpacity onPress={() => {this.listAllQA()}}>
               <Image
                 style={styles.option}
                 source={require('./res/img/nav_icon.png')}
               />
             </TouchableOpacity>
           </View>
-          {this.optionRender()}
           <View style={styles.content}>
-            {this.contentRender()}
+            {this.normalRender()}
           </View>
         </View>
-	  )
+  	  )
     }
   }
 }
-
-var {wh, ww} = Dimensions.get('window');
-
-console.log("(" + ww + ", " + wh + ")");
 
 const styles = StyleSheet.create({
   splashContainer: {
@@ -494,78 +398,11 @@ const styles = StyleSheet.create({
   ssc: {
     paddingLeft: 20
   },
-  qc: {
-    backgroundColor: '#87CEFA',
-  },
-  hq: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 5
-  },
-  q: {
-    alignItems: 'center',
-  	justifyContent: 'center',
-    backgroundColor: '#EE82EE',
-    borderRadius: 10,
-    margin: 5
-  },
-  tq: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 10
-  },
-  ac: {
-    backgroundColor: '#DB7093',
-  },
-  ha: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 5
-  },
-  a: {
-  	justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#48D1CC',
-    borderRadius: 5,
-    margin: 5
-  },
-  ta: {
-    margin: 10,
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
   s: {
   	justifyContent: 'center',
     alignItems: 'flex-start',
     backgroundColor: '#F0FFFF',
     padding: 10
-  },
-  ts: {
-    margin: 10,
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
-  hs: {
-    margin: 5,
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
-  ad: {
-  	justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
-    margin: 10,
-    borderRadius: 10,
-    height: 100,
-    alignSelf: 'flex-end'
-  },
-  optionContainer: {
-    backgroundColor: '#808000'
-  },
-  optionText: {
-    margin: 10,
-    fontSize: 20,
-    fontWeight: 'bold'
   },
   list: {
   	justifyContent: 'center',
