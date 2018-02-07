@@ -4,7 +4,7 @@ export default {
   memorymode: 'Memory Q&A',
   playmode: 'Play Q&A',
   qaindex: 'Q&A Index',
-  question: 'Question. index.',
-  answer: 'Answer.',
-  scripture: 'Scriptureindex'
+  question: 'Q. index. ',
+  answer: 'A. ',
+  scripture: 'Scripturesindex'
 };
