@@ -6,5 +6,5 @@ export default {
   qaindex: '问答目录',
   question: '（index）问：',
   answer: '答：',
-  scripture: '经文：'
+  scripture: '经文index'
 };

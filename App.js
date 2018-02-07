@@ -234,20 +234,31 @@ export default class App extends Component<{}> {
   renderScripture(S) {
     let s = [];
     for (i in S) {
-      if (S[i].length) {
-        let listS = this.genScripture(S[i]);
-        s.push(<Text>{listS}</Text>);
-      }
+      let st = S[i].T + "    " + S[i].C;
+      s.push(<Text style={styles.ssfont}>{st}</Text>)
     }
     return s;
   }
 
   renderScriptureDetail(S) {
     let s = [];
+    let si = 0;
     for (i in S) {
-      for (j in S[i]) {
-        let st = S[i][j].T + "    " + S[i][j].C;
-        s.push(<Text style={styles.ssfont}>{st}</Text>)
+      if (S[i].length) {
+        let ss = this.renderScripture(S[i]);
+        let st = I18n.t('scripture');
+        si = si + 1;
+        st = st.replace('index', String(si));
+        s.push(<View>
+            <View style={styles.sss}>
+              <Text style={styles.ssfont}>
+                {st}
+              </Text>
+            </View>
+            <View style={styles.ssc}>
+              {ss}
+            </View>
+          </View>)
       }
     }
     return s;
@@ -281,15 +292,6 @@ export default class App extends Component<{}> {
               <Text>
                 {this.renderAnswer(this.wcs[this.state.index].A)}
               </Text>
-            </View>
-          </View>
-          <View style={styles.qac}>
-            <View style={styles.qal}>
-              <Text style={styles.bfont}>
-              </Text>
-            </View>
-            <View style={styles.qar}>
-                {this.renderScripture(this.wcs[this.state.index].S)}
             </View>
           </View>
           <ScrollView contentContainerStyle={styles.s}>
@@ -486,6 +488,11 @@ const styles = StyleSheet.create({
   ssfont: {
     fontSize: 18,
     margin: 5
+  },
+  sss: {
+  },
+  ssc: {
+    paddingLeft: 20
   },
   qc: {
     backgroundColor: '#87CEFA',

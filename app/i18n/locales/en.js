@@ -6,5 +6,5 @@ export default {
   qaindex: 'Q&A Index',
   question: 'Question. index.',
   answer: 'Answer.',
-  scripture: 'Scripture.'
+  scripture: 'Scriptureindex'
 };
