@@ -111,11 +111,11 @@ export default class App extends Component<{}> {
 
   splashScreenRender() {
     return (
-	  <View style={styles.splashContainer}>
-		<Image
-			source={this.splashImg}>
+  	  <View style={styles.splashContainer}>
+  		  <Image
+  			  source={this.splashImg}>
         </Image>
-	  </View>
+  	  </View>
     )
   }
 
